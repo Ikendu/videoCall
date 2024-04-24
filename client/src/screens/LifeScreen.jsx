@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SockectProvider";
 
 function LifeScreen() {
@@ -7,17 +7,28 @@ function LifeScreen() {
 
   const socket = useSocket();
 
-  console.log("SOCKET", socket);
+  // console.log("SOCKET", socket);
 
   const submitForm = useCallback(
     (e) => {
       e.preventDefault();
-      console.log({ email, roomID });
+      // console.log({ email, roomID });
       socket.emit("room:join", { email, roomID });
     },
     [email, roomID]
   );
 
+  const handleJoinRoom = useCallback((data) => {
+    // const { email, roomID } = data;
+    console.log('New Data', data);
+  }, []);
+
+  useEffect(() => {
+    socket.on("room:join", handleJoinRoom);
+    return () => {
+      socket.off("room:join", handleJoinRoom);
+    };
+  }, [socket]);
 
   return (
     <div>

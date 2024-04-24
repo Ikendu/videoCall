@@ -4,17 +4,17 @@ const io = new Server(8000, {
   cors: true,
 });
 
-
-  const emailToSocketIdMap = new Map();
-  const socketIdToEmailMap = new Map();
+const emailToSocketIdMap = new Map();
+const socketIdToEmailMap = new Map();
 
 io.on("connection", (socket) => {
   console.log("Socket Connected", socket.id);
-    socket.on("room:join", (data) => {
-        console.log("Data", data);
+  socket.on("room:join", (data) => {
+    console.log("Data", data);
 
-        const {email, roomID} = data        
-        emailToSocketIdMap(email, socket.id)
-        socketIdToEmailMap(socket.id, email)
-    });
+    const { email, roomID } = data;
+    emailToSocketIdMap.set(email, socket.id);
+    socketIdToEmailMap.set(socket.id, email);
+    io.to(socket.id).emit("room:join", data);
+  });
 });
