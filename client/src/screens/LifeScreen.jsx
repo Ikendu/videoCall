@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SockectProvider";
+import { useNavigate } from "react-router-dom";
 
 function LifeScreen() {
   const [email, setEmail] = useState("");
   const [roomID, setRoomID] = useState("");
+  const navigate = useNavigate();
 
   const socket = useSocket();
 
@@ -15,13 +17,16 @@ function LifeScreen() {
       // console.log({ email, roomID });
       socket.emit("room:join", { email, roomID });
     },
-    [email, roomID]
+    [email, roomID, socket]
   );
 
-  const handleJoinRoom = useCallback((data) => {
-    // const { email, roomID } = data;
-    console.log('New Data', data);
-  }, []);
+  const handleJoinRoom = useCallback(
+    (data) => {
+      const { email, roomID } = data;
+      navigate(`/room/${roomID}`);
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     socket.on("room:join", handleJoinRoom);
