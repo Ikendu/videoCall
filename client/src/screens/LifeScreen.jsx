@@ -24,14 +24,13 @@ function LifeScreen() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <br />
-        <label
-          htmlFor="room"
+        <label htmlFor="room">room ID</label>
+        <input
+          id="room"
+          type="text"
           value={roomID}
           onChange={(e) => setRoomID(e.target.value)}
-        >
-          room ID
-        </label>
-        <input id="room" type="text" />
+        />
         <br />
         <button>Join</button>
       </form>
