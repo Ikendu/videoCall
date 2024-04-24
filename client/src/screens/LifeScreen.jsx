@@ -1,16 +1,23 @@
 import { useCallback, useState } from "react";
+import { useSocket } from "../context/SockectProvider";
 
 function LifeScreen() {
   const [email, setEmail] = useState("");
   const [roomID, setRoomID] = useState("");
 
+  const socket = useSocket();
+
+  console.log("SOCKET", socket);
+
   const submitForm = useCallback(
     (e) => {
       e.preventDefault();
       console.log({ email, roomID });
+      socket.emit("room:join", { email, roomID });
     },
     [email, roomID]
   );
+
 
   return (
     <div>
@@ -32,7 +39,7 @@ function LifeScreen() {
           onChange={(e) => setRoomID(e.target.value)}
         />
         <br />
-        <button>Join</button>
+        <button style={{ marginTop: 20 }}>Join</button>
       </form>
     </div>
   );
