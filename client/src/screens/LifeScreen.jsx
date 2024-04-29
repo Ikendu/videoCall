@@ -39,21 +39,27 @@ function LifeScreen() {
     <div>
       <h1>LifeScreen</h1>
       <form onSubmit={submitForm}>
-        <label htmlFor="email">Email ID</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div>
+          <label htmlFor="email">Email ID</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
         <br />
-        <label htmlFor="room">room ID</label>
-        <input
-          id="room"
-          type="text"
-          value={roomID}
-          onChange={(e) => setRoomID(e.target.value)}
-        />
+        <div>
+          <label htmlFor="room">room ID</label>
+          <input
+            id="room"
+            type="text"
+            value={roomID}
+            onChange={(e) => setRoomID(e.target.value)}
+          />
+        </div>
+
         <br />
         <button style={{ marginTop: 20 }}>Join</button>
       </form>
