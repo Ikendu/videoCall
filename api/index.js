@@ -19,4 +19,8 @@ io.on("connection", (socket) => {
     socket.join(roomID);
     io.to(socket.id).emit("room:join", data);
   });
+
+  socket.on("user:call", ({ to, offer }) => {
+    io.to(to).emit("incomming:call", { from: socket.id, offer });
+  });
 });
