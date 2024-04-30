@@ -26,7 +26,7 @@ function Room() {
   const handleIncommingCall = useCallback(({ from, offer }) => {
     console.log("incomming call ", from, offer);
   }, []);
-
+//handling joining room and creating room
   useEffect(() => {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);
