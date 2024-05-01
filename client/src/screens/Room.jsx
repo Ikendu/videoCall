@@ -23,11 +23,19 @@ function Room() {
     setMyStream(stream);
   }, [remoteSocketId, socket]);
 
-  const handleIncommingCall = useCallback(async ({ from, offer }) => {
-    const 
-    console.log("incomming call ", from, offer);
-    const ans = await peer.getAnswer(offer);
-  }, []);
+  const handleIncommingCall = useCallback(
+    async ({ from, offer }) => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      setMyStream(stream);
+      console.log("incomming call ", from, offer);
+      const ans = await peer.getAnswer(offer);
+      socket.emit("call:accepted", { to: from, ans });
+    },
+    [socket]
+  );
 
   //handling joining room and creating room
   useEffect(() => {
