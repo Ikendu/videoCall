@@ -28,6 +28,9 @@ class PeerService {
       return offer;
     }
   }
+  async setLocalDescription(ans) {
+    
+  }
 }
 
 export default new PeerService();

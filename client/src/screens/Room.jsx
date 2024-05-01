@@ -37,16 +37,18 @@ function Room() {
     [socket]
   );
 
-  //handling joining room and creating room
+  const handleCallAccepted = useCallback(() => {}, []);
   useEffect(() => {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);
+    socket.on("call:accepted", handleCallAccepted);
 
     return () => {
       socket.off("user:joined", handleUserJoinRoom);
       socket.off("incomming:call", handleIncommingCall);
+      socket.off("call:accepted", handleCallAccepted);
     };
-  }, [socket, handleUserJoinRoom, handleIncommingCall]);
+  }, [socket, handleUserJoinRoom, handleIncommingCall, handleCallAccepted]);
 
   return (
     <div>
