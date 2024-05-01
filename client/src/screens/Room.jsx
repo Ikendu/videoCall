@@ -37,7 +37,11 @@ function Room() {
     [socket]
   );
 
-  const handleCallAccepted = useCallback(() => {}, []);
+  const handleCallAccepted = useCallback(({ from, ans }) => {
+    peer.setLocalDescription(ans);
+    console.log("Call accepted");
+  }, []);
+
   useEffect(() => {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);

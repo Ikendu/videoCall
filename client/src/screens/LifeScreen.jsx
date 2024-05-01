@@ -33,7 +33,7 @@ function LifeScreen() {
     return () => {
       socket.off("room:join", handleJoinRoom);
     };
-  }, [socket]);
+  }, [handleJoinRoom, socket]);
 
   return (
     <div>
