@@ -23,10 +23,13 @@ function Room() {
     setMyStream(stream);
   }, [remoteSocketId, socket]);
 
-  const handleIncommingCall = useCallback(({ from, offer }) => {
+  const handleIncommingCall = useCallback(async ({ from, offer }) => {
+    const 
     console.log("incomming call ", from, offer);
+    const ans = await peer.getAnswer(offer);
   }, []);
-//handling joining room and creating room
+
+  //handling joining room and creating room
   useEffect(() => {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);
