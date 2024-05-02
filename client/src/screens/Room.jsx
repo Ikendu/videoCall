@@ -62,6 +62,8 @@ function Room() {
     [socket]
   );
 
+  const handleNegotiationFinal = useCallback(() => {}, []);
+
   useEffect(() => {
     peer.peer.addEventListener("track", async (e) => {
       const remoteStream = e.streams;
@@ -81,6 +83,7 @@ function Room() {
     socket.on("incomming:call", handleIncommingCall);
     socket.on("call:accepted", handleCallAccepted);
     socket.on("peer:nego:needed", handleNegotiationIncoming);
+    socket.on("peer:nego:final", handleNegotiationFinal);
 
     return () => {
       socket.off("user:joined", handleUserJoinRoom);
