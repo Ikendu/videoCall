@@ -54,6 +54,14 @@ function Room() {
     socket.emit("peer:nego:needed", { offer, to: remoteSocketId });
   }, [remoteSocketId, socket]);
 
+  const handleNegotiationIncoming = useCallback(
+    ({ from, offer }) => {
+      const ans = peer.getAnswer(offer);
+      socket.emit("peer:nego:done", { to: from, ans });
+    },
+    [socket]
+  );
+
   useEffect(() => {
     peer.peer.addEventListener("track", async (e) => {
       const remoteStream = e.streams;
@@ -72,6 +80,8 @@ function Room() {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);
     socket.on("call:accepted", handleCallAccepted);
+    socket.on("peer:nego:needed", handleNegotiationIncoming);
+
     return () => {
       socket.off("user:joined", handleUserJoinRoom);
       socket.off("incomming:call", handleIncommingCall);
