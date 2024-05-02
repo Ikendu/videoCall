@@ -62,7 +62,9 @@ function Room() {
     [socket]
   );
 
-  const handleNegotiationFinal = useCallback(() => {}, []);
+  const handleNegotiationFinal = useCallback(async ({ ans }) => {
+    await peer.setLocalDescription(ans);
+  }, []);
 
   useEffect(() => {
     peer.peer.addEventListener("track", async (e) => {
@@ -90,7 +92,14 @@ function Room() {
       socket.off("incomming:call", handleIncommingCall);
       socket.off("call:accepted", handleCallAccepted);
     };
-  }, [socket, handleUserJoinRoom, handleIncommingCall, handleCallAccepted]);
+  }, [
+    socket,
+    handleUserJoinRoom,
+    handleIncommingCall,
+    handleCallAccepted,
+    handleNegotiationIncoming,
+    handleNegotiationFinal,
+  ]);
 
   return (
     <div>
