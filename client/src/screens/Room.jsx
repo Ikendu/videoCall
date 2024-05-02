@@ -7,6 +7,7 @@ function Room() {
   const socket = useSocket();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
   const [myStream, setMyStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
 
   const handleUserJoinRoom = useCallback(({ email, id }) => {
     console.log(`${email} joined the room`);
@@ -37,16 +38,40 @@ function Room() {
     [socket]
   );
 
-  const handleCallAccepted = useCallback(({ from, ans }) => {
-    peer.setLocalDescription(ans);
-    console.log("Call accepted");
+  const handleCallAccepted = useCallback(
+    ({ from, ans }) => {
+      peer.setLocalDescription(ans);
+      console.log("Call accepted");
+      for (const track of myStream.getTracks()) {
+        peer.peer.addTrack(track, myStream);
+      }
+    },
+    [myStream]
+  );
+
+  const handelNegotiationNeed = useCallback(async () => {
+    const offer = await peer.getOffer();
+    socket.emit("peer:nego:needed", { offer, to: remoteSocketId });
+  }, [remoteSocketId, socket]);
+
+  useEffect(() => {
+    peer.peer.addEventListener("track", async (e) => {
+      const remoteStream = e.streams;
+      setRemoteStream(remoteStream);
+    });
   }, []);
+
+  useEffect(() => {
+    peer.peer.addEventListener("negotiationneeded", handelNegotiationNeed);
+    return () => {
+      peer.peer.removeEventListener("negotiationneeded", handelNegotiationNeed);
+    };
+  }, [handelNegotiationNeed]);
 
   useEffect(() => {
     socket.on("user:joined", handleUserJoinRoom);
     socket.on("incomming:call", handleIncommingCall);
     socket.on("call:accepted", handleCallAccepted);
-
     return () => {
       socket.off("user:joined", handleUserJoinRoom);
       socket.off("incomming:call", handleIncommingCall);
@@ -58,16 +83,30 @@ function Room() {
     <div>
       <h3>{remoteSocketId ? "Connected with a user" : "No one in the room"}</h3>
       <div>
-        <h2>My Stream</h2>
         {remoteSocketId && <button onClick={handleUserCall}>Call</button>}
         {myStream && (
-          <ReactPlayer
-            url={myStream}
-            playing
-            muted
-            width={"500"}
-            height={"300"}
-          />
+          <>
+            <h2>My Stream</h2>
+            <ReactPlayer
+              url={myStream}
+              playing
+              muted
+              width={"500"}
+              height={"300"}
+            />
+          </>
+        )}
+        {remoteStream && (
+          <>
+            <h2>Remote Stream</h2>
+            <ReactPlayer
+              url={myStream}
+              playing
+              muted
+              width={"500"}
+              height={"300"}
+            />
+          </>
         )}
       </div>
     </div>
