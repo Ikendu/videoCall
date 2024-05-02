@@ -91,6 +91,8 @@ function Room() {
       socket.off("user:joined", handleUserJoinRoom);
       socket.off("incomming:call", handleIncommingCall);
       socket.off("call:accepted", handleCallAccepted);
+      socket.off("peer:nego:needed", handleNegotiationIncoming);
+      socket.off("peer:nego:final", handleNegotiationFinal);
     };
   }, [
     socket,
