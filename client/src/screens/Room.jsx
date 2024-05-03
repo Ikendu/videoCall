@@ -6,8 +6,8 @@ import peer from "../services/peer";
 function Room() {
   const socket = useSocket();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
-  const [myStream, setMyStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
+  const [myStream, setMyStream] = useState();
+  const [remoteStream, setRemoteStream] = useState();
 
   const handleUserJoinRoom = useCallback(({ email, id }) => {
     console.log(`${email} joined the room`);
@@ -42,6 +42,7 @@ function Room() {
     ({ from, ans }) => {
       peer.setLocalDescription(ans);
       console.log("Call accepted");
+
       for (const track of myStream.getTracks()) {
         peer.peer.addTrack(track, myStream);
       }
@@ -55,8 +56,8 @@ function Room() {
   }, [remoteSocketId, socket]);
 
   const handleNegotiationIncoming = useCallback(
-    ({ from, offer }) => {
-      const ans = peer.getAnswer(offer);
+    async ({ from, offer }) => {
+      const ans = await peer.getAnswer(offer);
       socket.emit("peer:nego:done", { to: from, ans });
     },
     [socket]
@@ -124,7 +125,7 @@ function Room() {
           <>
             <h2>Remote Stream</h2>
             <ReactPlayer
-              url={myStream}
+              url={remoteStream}
               playing
               muted
               width={"500"}
