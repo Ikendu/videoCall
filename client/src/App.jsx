@@ -1,15 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import LifeScreen from "./screens/LifeScreen";
 import "./App.css";
-import Room from "./screens/Room";
+import LifeChat from "./screens/LifeChat";
 
 function App() {
   return (
     <>
       <div>
         <Routes>
-          <Route index element={<LifeScreen />} />
-          <Route path="/room/:roomId" element={<Room />} />
+          <Route index element={<LifeChat />} />
         </Routes>
       </div>
     </>
