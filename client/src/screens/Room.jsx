@@ -26,6 +26,7 @@ function Room() {
 
   const handleIncommingCall = useCallback(
     async ({ from, offer }) => {
+      setRemoteSocketId(from);
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -38,16 +39,19 @@ function Room() {
     [socket]
   );
 
+  const sendStream = useCallback(() => {
+    for (const track of myStream.getTracks()) {
+      peer.peer.addTrack(track, myStream);
+    }
+  }, [myStream]);
+
   const handleCallAccepted = useCallback(
-    ({ from, ans }) => {
+    ({ ans }) => {
       peer.setLocalDescription(ans);
       console.log("Call accepted");
-
-      for (const track of myStream.getTracks()) {
-        peer.peer.addTrack(track, myStream);
-      }
+      sendStream();
     },
-    [myStream]
+    [sendStream]
   );
 
   const handelNegotiationNeed = useCallback(async () => {
@@ -56,8 +60,8 @@ function Room() {
   }, [remoteSocketId, socket]);
 
   const handleNegotiationIncoming = useCallback(
-    async ({ from, offer }) => {
-      const ans = await peer.getAnswer(offer);
+    ({ from, offer }) => {
+      const ans = peer.getAnswer(offer);
       socket.emit("peer:nego:done", { to: from, ans });
     },
     [socket]
@@ -70,6 +74,7 @@ function Room() {
   useEffect(() => {
     peer.peer.addEventListener("track", async (e) => {
       const remoteStream = e.streams;
+      console.log("GOT TRACKS");
       setRemoteStream(remoteStream);
     });
   }, []);
@@ -108,6 +113,7 @@ function Room() {
     <div>
       <h3>{remoteSocketId ? "Connected with a user" : "No one in the room"}</h3>
       <div>
+        {myStream && <button onClick={sendStream}>Send Stream</button>}
         {remoteSocketId && <button onClick={handleUserCall}>Call</button>}
         {myStream && (
           <>
@@ -128,8 +134,8 @@ function Room() {
               url={remoteStream}
               playing
               muted
-              width={"500"}
-              height={"300"}
+              width={"200"}
+              height={"100"}
             />
           </>
         )}
