@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
 import ReactPlayer from "react-player";
+import peer from "../service/peer";
 
 function Room() {
   const [remoteSocketId, setRemoteSocketId] = useState(null);
@@ -17,8 +18,10 @@ function Room() {
       audio: true,
       video: true,
     });
+    const offer = await peer.getOffer();
+    socket.emit("user:call", { to: remoteSocketId, offer });
     setMyStream(stream);
-  }, []);
+  }, [remoteSocketId, socket]);
 
   useEffect(() => {
     socket.on("user:joined", handleUserJoined);
