@@ -1,13 +1,19 @@
 import { useCallback, useState } from "react";
+import { useSocket } from "../context/SocketProvider";
 
 function LifeChat() {
   const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    console.log({ email, room });
-  }, []);
+  const socket = useSocket();
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      socket.emit("room:join", { email, room });
+    },
+    [email, room, socket]
+  );
 
   return (
     <div>
