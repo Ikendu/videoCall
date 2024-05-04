@@ -13,14 +13,18 @@ function LifeChat() {
     (e) => {
       e.preventDefault();
       socket.emit("room:join", { email, room });
-      navigate(`/room/${room}`);
     },
-    [email, navigate, room, socket]
+    [email, room, socket]
   );
 
-  const handleRoomJoin = useCallback((data) => {
-    console.log(`Data from backend `, data);
-  }, []);
+  const handleRoomJoin = useCallback(
+    (data) => {
+      const { email, room } = data;
+      console.log(`Data from backend `, email);
+      navigate(`/room/${room}`);
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     socket.on("room:join", handleRoomJoin);
