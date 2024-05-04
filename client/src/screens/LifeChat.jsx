@@ -1,9 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
+import { useNavigate } from "react-router-dom";
 
 function LifeChat() {
   const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
+  const navigate = useNavigate();
 
   const socket = useSocket();
 
@@ -11,9 +13,21 @@ function LifeChat() {
     (e) => {
       e.preventDefault();
       socket.emit("room:join", { email, room });
+      navigate(`/room/${room}`);
     },
-    [email, room, socket]
+    [email, navigate, room, socket]
   );
+
+  const handleRoomJoin = useCallback((data) => {
+    console.log(`Data from backend `, data);
+  }, []);
+
+  useEffect(() => {
+    socket.on("room:join", handleRoomJoin);
+    return () => {
+      socket.off("room:join", handleRoomJoin);
+    };
+  }, [handleRoomJoin, socket]);
 
   return (
     <div>
