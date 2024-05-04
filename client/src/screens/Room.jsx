@@ -1,11 +1,27 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketProvider";
 
 function Room() {
   const socket = useSocket();
+  const [remoteUserId, setRemoteUserId] = useState(null);
 
-  useEffect(() => {}, []);
+  const handleUserJoined = useCallback(({ email, id }) => {
+    console.log(`${email} joined the room`);
+    setRemoteUserId(id);
+  }, []);
 
-  return <div>My Room</div>;
+  useEffect(() => {
+    socket.on("user:joined", handleUserJoined);
+    return () => {
+      socket.off("user:joined", handleUserJoined);
+    };
+  }, [handleUserJoined, socket]);
+
+  return (
+    <div>
+      <h1>Chat Room</h1>
+      <h3>{remoteUserId ? "Connected" : "No one in the room"}</h3>
+    </div>
+  );
 }
 export default Room;
