@@ -25,8 +25,8 @@ function Room() {
     setMyStream(stream);
   }, [remoteSocketId, socket]);
 
-    const handleIncomingCall = useCallback(({ from, offer }) => {
-      
+  const handleIncomingCall = useCallback(({ from, offer }) => {
+    console.log("Incoming Call", from, offer);
   }, []);
 
   useEffect(() => {
